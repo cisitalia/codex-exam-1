@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <title>시도 폼</title>
+  <style>
+    body { font-family: system-ui, -apple-system, "Malgun Gothic", "맑은 고딕", sans-serif; padding: 24px; }
+    form { display:flex; flex-direction:column; gap:12px; max-width:400px; }
+    label { font-weight:600; }
+    input { padding:8px; border:1px solid #e5e7eb; border-radius:6px; }
+    .row { display:flex; gap:12px; }
+    .row > div { flex:1; }
+  </style>
+</head>
+<body>
+<h1 th:text="${sido.seq} == null ? '새 시도' : '시도 수정'"></h1>
+
+<form th:action="${sido.seq} == null ? @{/sido} : @{|/sido/${sido.seq}|}" method="post">
+  <div class="row">
+    <div>
+      <label>시도</label>
+      <input type="text" name="sido" th:value="${sido.sido}" required/>
+    </div>
+    <div>
+      <label>구군</label>
+      <input type="text" name="gugun" th:value="${sido.gugun}" required/>
+    </div>
+  </div>
+  <div>
+    <button type="submit">저장</button>
+    <a href="/sido">목록</a>
+  </div>
+  </form>
+</body>
+</html>
+

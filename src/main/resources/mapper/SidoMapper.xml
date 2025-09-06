@@ -1,0 +1,61 @@
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.ldk.sido.mapper.SidoMapper">
+
+  <resultMap id="SidoMap" type="kr.co.ldk.sido.domain.Sido">
+    <id property="seq" column="seq"/>
+    <result property="sido" column="sido"/>
+    <result property="gugun" column="gugun"/>
+  </resultMap>
+
+  <sql id="Base_Columns"> seq, sido, gugun </sql>
+
+  <select id="findById" parameterType="int" resultMap="SidoMap">
+    SELECT <include refid="Base_Columns"/>
+    FROM ldk_common.sido
+    WHERE seq = #{seq}
+  </select>
+
+  <select id="count" resultType="int">
+    SELECT COUNT(*)
+    FROM ldk_common.sido
+    <where>
+      <if test="keyword != null and keyword != ''">
+        (sido LIKE CONCAT('%', #{keyword}, '%')
+         OR gugun LIKE CONCAT('%', #{keyword}, '%'))
+      </if>
+    </where>
+  </select>
+
+  <select id="findPage" resultMap="SidoMap">
+    SELECT <include refid="Base_Columns"/>
+    FROM ldk_common.sido
+    <where>
+      <if test="keyword != null and keyword != ''">
+        (sido LIKE CONCAT('%', #{keyword}, '%')
+         OR gugun LIKE CONCAT('%', #{keyword}, '%'))
+      </if>
+    </where>
+    ORDER BY seq DESC
+    LIMIT #{limit} OFFSET #{offset}
+  </select>
+
+  <insert id="insert" parameterType="kr.co.ldk.sido.domain.Sido" useGeneratedKeys="true" keyProperty="seq">
+    INSERT INTO ldk_common.sido (sido, gugun)
+    VALUES (#{sido}, #{gugun})
+  </insert>
+
+  <update id="update" parameterType="kr.co.ldk.sido.domain.Sido">
+    UPDATE ldk_common.sido
+    SET sido = #{sido},
+        gugun = #{gugun}
+    WHERE seq = #{seq}
+  </update>
+
+  <delete id="delete" parameterType="int">
+    DELETE FROM ldk_common.sido WHERE seq = #{seq}
+  </delete>
+
+</mapper>
+

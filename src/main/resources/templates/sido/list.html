@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <title>시도 리스트</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <style>
+    body { font-family: system-ui, -apple-system, "Malgun Gothic", "맑은 고딕", sans-serif; padding: 24px; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 8px 10px; border-bottom: 1px solid #e5e7eb; }
+    th { text-align: left; background: #f9fafb; }
+    .toolbar { display:flex; gap:8px; align-items:center; margin-bottom:12px; }
+    .pager { display:flex; gap:6px; margin-top:14px; flex-wrap: wrap; }
+    .pager a, .pager span { padding:4px 8px; border:1px solid #e5e7eb; border-radius:6px; text-decoration:none; color:#111827; }
+    .pager .active { background:#111827; color:#fff; }
+    .pager .disabled { color:#9ca3af; border-color:#e5e7eb; pointer-events:none; }
+    .actions form { display:inline; }
+  </style>
+  <script>
+    function go(href){ location.href = href; }
+  </script>
+  </head>
+<body>
+<h1>시도 리스트</h1>
+
+<div class="toolbar">
+  <form th:action="@{/sido}" method="get">
+    <input type="text" name="keyword" th:value="${keyword}" placeholder="시도/구군 검색"/>
+    <input type="hidden" name="size" th:value="${size}"/>
+    <button type="submit">검색</button>
+  </form>
+  <a th:href="@{/sido/new}">+ 새 항목</a>
+  <span th:text="|총 ${total}건|"></span>
+  </div>
+
+<table>
+  <thead>
+  <tr>
+    <th style="width:80px;">SEQ</th>
+    <th>시도</th>
+    <th>구군</th>
+    <th style="width:200px;">작업</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="row : ${rows}">
+    <td th:text="${row.seq}"></td>
+    <td th:text="${row.sido}"></td>
+    <td th:text="${row.gugun}"></td>
+    <td class="actions">
+      <a th:href="@{|/sido/${row.seq}/edit|}">수정</a>
+      <form th:action="@{|/sido/${row.seq}/delete|}" method="post" style="display:inline;">
+        <button type="submit" onclick="return confirm('삭제할까요?')">삭제</button>
+      </form>
+    </td>
+  </tr>
+  </tbody>
+  </table>
+
+<div class="pager" th:if="${totalPages > 0}">
+  <a th:href="@{|/sido?page=${firstPage}&size=${size}&keyword=${keyword}|}"
+     th:classappend="${page == 1} ? 'disabled'">처음</a>
+  <a th:href="@{|/sido?page=${prevPage}&size=${size}&keyword=${keyword}|}"
+     th:classappend="${page == 1} ? 'disabled'">이전</a>
+
+  <a th:each="p : ${#numbers.sequence(blockStart, blockEnd)}"
+     th:text="${p}"
+     th:href="@{|/sido?page=${p}&size=${size}&keyword=${keyword}|}"
+     th:classappend="${p == page} ? 'active'">
+  </a>
+
+  <a th:href="@{|/sido?page=${nextPage}&size=${size}&keyword=${keyword}|}"
+     th:classappend="${page == totalPages} ? 'disabled'">다음</a>
+  <a th:href="@{|/sido?page=${lastPage}&size=${size}&keyword=${keyword}|}"
+     th:classappend="${page == totalPages} ? 'disabled'">마지막</a>
+</div>
+
+</body>
+</html>
